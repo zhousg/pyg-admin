@@ -4,6 +4,8 @@ import router from './router'
 
 /* 依赖全局样式文件 */
 import './assets/css/global.css'
+/* 依赖字体图标css */
+import './assets/fonts/iconfont.css'
 
 /* 依赖element-ui */
 import ElementUI from 'element-ui'

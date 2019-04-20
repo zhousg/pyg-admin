@@ -4,10 +4,14 @@
       <img src="../assets/images/logo.png" alt="">
       <el-form :model="form">
         <el-form-item>
-          <el-input placeholder="请输入用户名" v-model="form.username"></el-input>
+          <el-input prefix-icon="iconfont icon-account" placeholder="请输入用户名" v-model="form.username"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-input type="password" placeholder="请输入密码" v-model="form.password"></el-input>
+          <el-input prefix-icon="iconfont icon-eye-slash" type="password" placeholder="请输入密码" v-model="form.password"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary">登录</el-button>
+          <el-button>重置</el-button>
         </el-form-item>
       </el-form>
     </div>
