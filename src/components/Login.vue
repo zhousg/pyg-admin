@@ -42,9 +42,12 @@ export default {
   methods: {
     submit () {
       // 验证表单
-      this.$refs.form.validate(valid => {
+      this.$refs.form.validate(async valid => {
         if (valid) {
-          console.log('成功')
+          // 发送登录的请求
+          // 通过 async await 获取响应的结果 去进行处理
+          const {data: {meta}} = await this.$http.post('login', this.form)
+          if (meta.status !== 200) return this.$message.error(meta.msg || '登录失败')
         }
       })
     }
