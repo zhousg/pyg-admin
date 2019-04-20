@@ -2,15 +2,16 @@
   <div class="login_container">
     <div class="box">
       <img src="../assets/images/logo.png" alt="">
-      <el-form :model="form">
-        <el-form-item>
+      <el-form ref="form" :model="form" :rules="rules">
+        <el-form-item prop="username">
           <el-input prefix-icon="iconfont icon-account" placeholder="请输入用户名" v-model="form.username"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-input prefix-icon="iconfont icon-eye-slash" type="password" placeholder="请输入密码" v-model="form.password"></el-input>
+        <el-form-item prop="password">
+          <el-input prefix-icon="iconfont icon-eye-slash" type="password" placeholder="请输入密码"
+                    v-model="form.password"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">登录</el-button>
+          <el-button type="primary" @click="submit()">登录</el-button>
           <el-button>重置</el-button>
         </el-form-item>
       </el-form>
@@ -26,7 +27,26 @@ export default {
       form: {
         username: '',
         password: ''
+      },
+      rules: {
+        username: [
+          {required: true, message: '请输入用户名', trigger: 'blur'}
+        ],
+        password: [
+          {required: true, message: '请输入密码', trigger: 'blur'},
+          {min: 6, max: 18, message: '密码长度6-18个字符', trigger: 'blur'}
+        ]
       }
+    }
+  },
+  methods: {
+    submit () {
+      // 验证表单
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          console.log('成功')
+        }
+      })
     }
   }
 }
@@ -52,7 +72,8 @@ export default {
     padding: 0 15px;
     box-sizing: border-box;
   }
-  .login_container .box img{
+
+  .login_container .box img {
     width: 200px;
     display: block;
     margin: 15px auto;
