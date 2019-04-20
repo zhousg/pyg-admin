@@ -46,8 +46,13 @@ export default {
         if (valid) {
           // 发送登录的请求
           // 通过 async await 获取响应的结果 去进行处理
-          const {data: {meta}} = await this.$http.post('login', this.form)
+          const {data: {data, meta}} = await this.$http.post('login', this.form)
           if (meta.status !== 200) return this.$message.error(meta.msg || '登录失败')
+          // 登录成功
+          // 保存token  sessionStorage
+          sessionStorage.setItem('token', data.token)
+          // 跳转 首页
+          this.$router.push('/home')
         }
       })
     }
