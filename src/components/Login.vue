@@ -2,14 +2,29 @@
   <div class="login_container">
     <div class="box">
       <img src="../assets/images/logo.png" alt="">
-      <el-button type="primary">主要按钮</el-button>
+      <el-form :model="form">
+        <el-form-item>
+          <el-input placeholder="请输入用户名" v-model="form.username"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-input type="password" placeholder="请输入密码" v-model="form.password"></el-input>
+        </el-form-item>
+      </el-form>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Login'
+  name: 'Login',
+  data () {
+    return {
+      form: {
+        username: '',
+        password: ''
+      }
+    }
+  }
 }
 </script>
 
@@ -30,6 +45,8 @@ export default {
     transform: translate(-50%, -60%);
     border-radius: 4px;
     background: linear-gradient(45deg, #D2ECF1, #efefef);
+    padding: 0 15px;
+    box-sizing: border-box;
   }
   .login_container .box img{
     width: 200px;

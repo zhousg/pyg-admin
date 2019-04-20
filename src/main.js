@@ -8,7 +8,7 @@ import './assets/css/global.css'
 /* 依赖element-ui */
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-Vue.use(ElementUI)
+Vue.use(ElementUI, {size: 'small'})
 
 /* 控制台的日志更详细一些 true  */
 Vue.config.productionTip = false
