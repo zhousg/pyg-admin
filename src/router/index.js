@@ -13,7 +13,7 @@ const router = new Router({
       component: Login
     },
     {
-      // 如是/根路径 重新到 /home
+      // 如是/根路径 重定向到 /home
       path: '/',
       redirect: '/home'
     },

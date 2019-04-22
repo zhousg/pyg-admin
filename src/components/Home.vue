@@ -8,23 +8,31 @@
     <el-container>
       <el-aside class="home_aside" :width="collapse?'65px':'180px'">
         <el-menu
+          router
+          :unique-opened="true"
           :collapse="collapse"
           :collapse-transition="false"
           style="border: none; margin-top: 5px"
           background-color="#333744"
           text-color="#fff"
           active-text-color="#ffd04b">
-          <el-submenu index="1">
+          <!--一级菜单-->
+          <!-- 注意： 一级菜单 index 和 二级菜单 index 是有从属关系的 -->
+          <!-- 一级菜单的索引 id  二级菜单的索引  item.id-lastItem.id -->
+          <el-submenu :index="item.id.toString()" v-for="(item,i) in menus" :key="item.id">
             <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>导航一</span>
+              <i :class="['iconfont',iconArr[i]]"></i>
+              <span>&nbsp;{{item.authName}}</span>
             </template>
-            <el-menu-item index="1-1">选项2</el-menu-item>
-            <el-menu-item index="1-2">选项2</el-menu-item>
+            <!--二级菜单  只要index唯一就可以了 -->
+            <el-menu-item :index="lastItem.path" v-for="lastItem in item.children" :key="lastItem.id">
+              <i class="el-icon-menu"></i>
+              <span>{{lastItem.authName}}</span>
+            </el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
-      <el-main class="home_main">Main</el-main>
+      <el-main class="home_main"></el-main>
     </el-container>
   </el-container>
 </template>
@@ -35,7 +43,8 @@ export default {
   data () {
     return {
       collapse: false,
-      menus: []
+      menus: [],
+      iconArr: ['icon-user-fill', 'icon-cog', 'icon-shoppingcart', 'icon-file', 'icon-chart-area']
     }
   },
   mounted () {
@@ -46,9 +55,15 @@ export default {
     toggleMenu () {
       this.collapse = !this.collapse
     },
-    getData () {
+    async getData () {
       // 获取数据
-      this.$http.get('menus').then(res => console.log(res.data))
+      const {data: {data, meta}} = await this.$http.get('menus')
+      // 判断获取是否成功  注意：添加操作 201  其他操作 200
+      if (meta.status !== 200) return this.$message.error('获取菜单失败')
+      // 已经成功  修改data中的菜单数据
+      this.menus = data
+      // 更新视图  前提是视图用了该数据
+      // 去视图 用户指令  渲染出来
     }
   }
 }
