@@ -14,3 +14,7 @@ body{
 .el-table{
   margin-top: 15px;
 }
+.pager_container{
+  margin-top: 15px;
+  text-align: right;
+}
