@@ -6,3 +6,11 @@ body{
   margin: 0;
   padding: 0;
 }
+
+/* 组件的名字是什么 将来的标签上就会有一个相同的类 */
+.el-card{
+  margin-top: 15px;
+}
+.el-table{
+  margin-top: 15px;
+}
