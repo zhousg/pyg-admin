@@ -3,7 +3,7 @@
     <el-header class="home_header">
       <el-button icon="iconfont icon-menu" @click="toggleMenu()" size="mini" circle></el-button>
       <span class="title">品优购后台管理系统</span>
-      <el-button class="logout" type="danger" size="mini" round>退出</el-button>
+      <el-button class="logout" type="danger" size="mini" round @click="logout()">退出</el-button>
     </el-header>
     <el-container>
       <el-aside class="home_aside" :width="collapse?'65px':'180px'">
@@ -32,7 +32,9 @@
           </el-submenu>
         </el-menu>
       </el-aside>
-      <el-main class="home_main"></el-main>
+      <el-main class="home_main">
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
@@ -64,6 +66,11 @@ export default {
       this.menus = data
       // 更新视图  前提是视图用了该数据
       // 去视图 用户指令  渲染出来
+    },
+    logout () {
+      // 思考： 清除token  就是退出   但是跳转登录页
+      sessionStorage.removeItem('token')
+      this.$router.push('/login')
     }
   }
 }
@@ -81,7 +88,7 @@ export default {
   background: #333744;
 }
 .home_main{
-  background: #EAEDF1;
+  background: #fff;
 }
   .title{
     color: #ccc;

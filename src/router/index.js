@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/components/Login'
 import Home from '@/components/Home'
+import Welcome from '@/components/Welcome'
 
 Vue.use(Router)
 
@@ -20,7 +21,12 @@ const router = new Router({
     {
       path: '/home',
       name: 'Home',
-      component: Home
+      component: Home,
+      redirect: '/welcome',
+      // 二级路由配置  将会在home组件下使用
+      children: [
+        {path: '/welcome', name: 'welcome', component: Welcome}
+      ]
     }
   ]
 })
