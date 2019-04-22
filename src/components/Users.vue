@@ -33,6 +33,7 @@
             <!-- el-switch 默认使用布尔值  如果为true激活 反之...  -->
             <!-- active-color="#13ce66" 激活   inactive-color="#ff4949" 没激活颜色 -->
             <el-switch
+              @change="updateState(scope.row.id,scope.row.mg_state)"
               v-model="scope.row.mg_state"
               active-color="#13ce66"
               inactive-color="#ccc">
@@ -44,7 +45,7 @@
             <el-button-group>
               <el-button icon="el-icon-edit" round></el-button>
               <el-button icon="el-icon-delete" @click="delUsers(scope.row.id)" round></el-button>
-              <el-button icon="el-icon-setting" round></el-button>
+              <el-button icon="el-icon-setting" @click="showRoleDialogFormVisible(scope.row)" round></el-button>
             </el-button-group>
           </template>
         </el-table-column>
@@ -61,6 +62,7 @@
         </el-pagination>
       </div>
     </el-card>
+    <!--添加用户-->
     <el-dialog width="400px" title="添加用户" :visible.sync="dialogFormVisible">
       <el-form ref="addForm" :model="addForm" :rules="addRules" label-width="80px" autocomplete="off">
         <el-form-item label="用户名" prop="username">
@@ -79,6 +81,31 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="addSubmit()">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!--分配角色-->
+    <el-dialog width="400px" title="分配角色" :visible.sync="roleDialogFormVisible">
+      <el-form label-width="100px" autocomplete="off">
+        <el-form-item label="当前用户：">
+          {{roleUserName}}
+        </el-form-item>
+        <el-form-item label="当前用户：">
+          {{roleUserRoleName}}
+        </el-form-item>
+        <el-form-item label="分配角色：">
+          <el-select v-model="roleValue" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="changeRole()">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -133,7 +160,19 @@ export default {
           // 手机号必须自定义校验规则  通过自己的函数来校验 （rule,value,callback）
           {validator: checkMobile, trigger: 'blur'}
         ]
-      }
+      },
+      // 控制分配角色对话框的显示隐藏
+      roleDialogFormVisible: false,
+      // 选中角色的值
+      roleValue: '',
+      // 当前用户的 用户名
+      roleUserName: '',
+      // 当前用户的 角色
+      roleUserRoleName: '',
+      // 用户的ID
+      roleUserId: '',
+      // 角色下拉所有选项
+      options: []
     }
   },
   mounted () {
@@ -198,6 +237,38 @@ export default {
         this.$message.success('删除成功')
         this.getData()
       }).catch(() => {})
+    },
+    async updateState (id, newState) {
+      // id 用户的ID newState 已改变的状态
+      // console.log(id, newState)
+      const {data: {meta}} = await this.$http.put(`users/${id}/state/${newState}`)
+      if (meta.status !== 200) return this.$message.error('修改状态失败')
+      this.$message.success('修改状态成功')
+      this.getData()
+    },
+    async showRoleDialogFormVisible (row) {
+      // 打开对话框
+      this.roleDialogFormVisible = true
+      // 渲染下拉菜单
+      const {data: {data, meta}} = await this.$http.get('roles')
+      if (meta.status !== 200) return this.$message.error('获取角色失败')
+      this.options = data
+      // 当前用户的信息  获取用户信息
+      // const {data: {data: ud, meta: um}} = await this.$http.get(`users/${id}`)
+      // if (um.status !== 200) return this.$message.error('获取用户失败')
+      // console.log(ud)
+      this.roleUserId = row.id
+      this.roleUserName = row.username
+      this.roleUserRoleName = row.role_name
+    },
+    async changeRole () {
+      const {data: {meta}} = await this.$http.put(`users/${this.roleUserId}/role`, {
+        rid: this.roleValue
+      })
+      if (meta.status !== 200) return this.$message.error('分配角色失败')
+      this.$message.success('分配角色成功')
+      this.roleDialogFormVisible = false
+      this.getData()
     }
   }
 }
