@@ -15,7 +15,7 @@
             </el-input>
         </el-col>
         <el-col :span="18">
-          <el-button type="primary" @click="dialogFormVisible = true" plain>添加用户</el-button>
+          <el-button type="primary" @click="showDialogForm()" plain>添加用户</el-button>
         </el-col>
       </el-row>
       <!--表格-->
@@ -60,7 +60,7 @@
       </div>
     </el-card>
     <el-dialog width="400px" title="添加用户" :visible.sync="dialogFormVisible">
-      <el-form :model="addForm" :rules="addRules" label-width="80px" autocomplete="off">
+      <el-form ref="addForm" :model="addForm" :rules="addRules" label-width="80px" autocomplete="off">
         <el-form-item label="用户名" prop="username">
           <el-input v-model="addForm.username"></el-input>
         </el-form-item>
@@ -101,7 +101,7 @@ export default {
       reqParams: {
         query: '',
         pagenum: 1,
-        pagesize: 2
+        pagesize: 5
       },
       // 总条数
       total: 0,
@@ -162,10 +162,26 @@ export default {
       this.getData()
     },
     addSubmit () {
-      // 添加成功后
-      // this.dialogFormVisible = false
       // 输入的时候进行数据的验证
       // 请求前点击提交的时候 还要验证一次
+      this.$refs.addForm.validate(async valid => {
+        if (valid) {
+          // 请求后台
+          const {data: {meta}} = await this.$http.post('users', this.addForm)
+          if (meta.status !== 201) return this.$message.error('添加失败')
+          // 添加成功后
+          this.dialogFormVisible = false
+          // 更新列表
+          this.getData()
+        }
+      })
+    },
+    showDialogForm () {
+      // 注意： 只有先渲染 找到dom
+      // 显示添加对话框
+      this.dialogFormVisible = true
+      // 重置表单  内容  验证
+      this.$refs.addForm.resetFields()
     }
   }
 }
