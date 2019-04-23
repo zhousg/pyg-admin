@@ -1,7 +1,7 @@
 <template>
   <div class="welcome_container">
-    <h3>欢迎来到品优购后台关系系统</h3>
-    <img src="../assets/images/welcome.jpg" alt="">
+    <h3>欢迎来到品优购后台管理系统</h3>
+    <img src="../../assets/images/welcome.jpg" alt="">
   </div>
 </template>
 

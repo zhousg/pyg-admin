@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/components/Login'
-import Home from '@/components/Home'
-import Welcome from '@/components/Welcome'
-import Users from '@/components/Users'
+import Home from '@/components/home/Home'
+import Welcome from '@/components/home/Welcome'
+import Users from '@/components/users/Users'
 
 Vue.use(Router)
 
