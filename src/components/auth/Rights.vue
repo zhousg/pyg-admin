@@ -11,6 +11,7 @@
         :data="rightsList"
         style="width: 100%">
         <el-table-column
+          width="100px"
           type="index">
         </el-table-column>
         <el-table-column
