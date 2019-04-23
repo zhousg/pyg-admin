@@ -2,13 +2,49 @@ export default {
   name: 'Roles',
   data () {
     return {
-      rolesList: []
+      rolesList: [],
+      /* 添加相关的数据 */
+      addDialogFormVisible: false,
+      addForm: {
+        roleName: '',
+        roleDesc: ''
+      },
+      addRules: {
+        roleName: [
+          {required: true, message: '角色名称必填', trigger: 'blur'}
+        ],
+        roleDesc: [
+          {required: true, message: '角色描述必填', trigger: 'blur'}
+        ]
+      }
     }
   },
   mounted () {
     this.getData()
   },
   methods: {
+    // 显示添加对话框
+    showAddDialog () {
+      this.addDialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs.addForm.resetFields()
+      })
+    },
+    // 添加操作
+    addSubmit () {
+      // 整个表单验证
+      this.$refs.addForm.validate(async valid => {
+        if (valid) {
+          // 提交添加请求
+          const {data: {meta}} = await this.$http.post('roles', this.addForm)
+          if (meta.status !== 201) return this.$message.error('添加角色失败')
+          this.$message.success('添加角色成功')
+          // 关闭对话框  更新列表数据
+          this.addDialogFormVisible = false
+          this.getData()
+        }
+      })
+    },
     async getData () {
       const {data: {data, meta}} = await this.$http.get('roles')
       if (meta.status !== 200) return this.$message.error('获取角色失败')
