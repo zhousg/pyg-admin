@@ -33,6 +33,8 @@ export default {
       rightTree: [],
       // 选中的权限ID列表
       rightCheckedList: [],
+      // 分配权限角色ID
+      rightRoleId: null,
       defaultProps: {
         // 数据结构中 下一级数据的字段名称
         children: 'children',
@@ -47,8 +49,6 @@ export default {
   methods: {
     // 显示分配权限的对话框
     async showRightDialog (row) {
-      // this.rightCheckedList = []
-      this.rightDialogFormVisible = true
       // 获取树状的所有权限数据
       const {data: {data, meta}} = await this.$http.get('rights/tree')
       if (meta.status !== 200) return this.$message.error('获取所有权限失败')
@@ -58,7 +58,7 @@ export default {
       // 问题：获取到父节点的id 获取到子节点的id
       // 父节点如果选项 下面所有的子节点都会选中
       // 半选中  子节点没有全部选中
-      // 注意：不能有父节点，子需要三级权限ID即可
+      // 注意：不能有父节点，只需要三级权限ID即可
       const arr = []
       row.child.forEach(item => {
         item.child.forEach(item => {
@@ -68,9 +68,27 @@ export default {
         })
       })
       this.rightCheckedList = arr
+      // 获取数据 进行选中  再展示对话框
+      this.rightDialogFormVisible = true
+      // 设置当前分配权限的角色ID
+      this.rightRoleId = row.id
     },
     // 分配权限
-    rightSubmit () {
+    async rightSubmit () {
+      // 合并全选与半选
+      const treeDom = this.$refs.tree
+      const checkedArr = treeDom.getCheckedKeys()
+      const halfCheckArr = treeDom.getHalfCheckedKeys()
+      const arr = [...checkedArr, ...halfCheckArr]
+      // 提交
+      const {data: {meta}} = await this.$http.post(`roles/${this.rightRoleId}/rights`, {
+        rids: arr.join(',')
+      })
+      if (meta.status !== 200) return this.$message.error('分配权限失败')
+      this.$message.success('分配权限成功')
+      // 善后
+      this.rightDialogFormVisible = false
+      this.getData()
     },
     // 删除权限
     delRights (row, rightId) {

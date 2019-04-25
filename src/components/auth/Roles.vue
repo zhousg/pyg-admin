@@ -83,6 +83,7 @@
     <!--分配权限的对话框-->
     <el-dialog width="400px" title="分配权限" :visible.sync="rightDialogFormVisible">
       <el-tree
+        ref="tree"
         :data="rightTree"
         show-checkbox
         node-key="id"
