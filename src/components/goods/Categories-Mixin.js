@@ -41,11 +41,45 @@ export default {
     this.getData()
   },
   methods: {
-    showEditDialog () {
+    // 删除
+    delCategory (id) {
+      this.$confirm('是否删除该分类?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        // 发请求去删除
+        const {data: {meta}} = await this.$http.delete(`categories/${id}`)
+        if (meta.status !== 200) return this.$message.error('删除分类失败')
+        this.$message.success('删除分类成功')
+        this.getData()
+      }).catch(() => {})
+    },
+    showEditDialog (id) {
       this.editDialogFormVisible = true
+      // 重置表单
+      this.$nextTick(async () => {
+        this.$refs.editForm.resetFields()
+        // 填充表单的时候 在重置之后
+        // 获取数据
+        const {data: {data, meta}} = await this.$http.get(`categories/${id}`)
+        if (meta.status !== 200) return this.$message.error('获取分类失败')
+        // 填充数据
+        this.editForm = data
+      })
     },
     editSubmit () {
-
+      this.$refs.editForm.validate(async valid => {
+        if (valid) {
+          const {data: {meta}} = await this.$http.put(`categories/${this.editForm.cat_id}`, {
+            cat_name: this.editForm.cat_name
+          })
+          if (meta.status !== 200) return this.$message.error('编辑分类失败')
+          this.$message.success('编辑分类成功')
+          this.getData()
+          this.editDialogFormVisible = false
+        }
+      })
     },
     addSubmit () {
       // 提交前做校验

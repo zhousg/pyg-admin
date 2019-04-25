@@ -36,8 +36,8 @@
           label="操作">
           <template slot-scope="scope">
             <el-button-group>
-              <el-button icon="el-icon-edit" @click="showEditDialog()" round></el-button>
-              <el-button icon="el-icon-delete" round></el-button>
+              <el-button icon="el-icon-edit" @click="showEditDialog(scope.row.cat_id)" round></el-button>
+              <el-button icon="el-icon-delete" @click="delCategory(scope.row.cat_id)" round></el-button>
             </el-button-group>
           </template>
         </el-table-column>
@@ -68,6 +68,7 @@
           <!-- @change="handleChange" 选择事件 指定了一个处理函数 handleChange-->
           <!-- props =｛value:'选项对象的id字段',label:'选项对象的名称字段'｝ -->
           <el-cascader
+            clearable
             style="width: 100%"
             :props="{value:'cat_id',label:'cat_name'}"
             expand-trigger="hover"
@@ -89,7 +90,7 @@
     <el-dialog title="编辑分类" width="400px" :visible.sync="editDialogFormVisible">
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="100px" autocomplete="off">
         <el-form-item label="分类名称" prop="cat_name">
-          <el-input v-model="addForm.cat_name"></el-input>
+          <el-input v-model="editForm.cat_name"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
