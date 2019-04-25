@@ -30,46 +30,14 @@ export default {
       },
       /* 分配权限相关的数据 */
       rightDialogFormVisible: false,
-      rightTree: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }],
+      rightTree: [],
+      // 选中的权限ID列表
+      rightCheckedList: [],
       defaultProps: {
         // 数据结构中 下一级数据的字段名称
         children: 'children',
         // 显示的文字  的数据字段的名称
-        label: 'label'
+        label: 'authName'
       }
     }
   },
@@ -78,8 +46,28 @@ export default {
   },
   methods: {
     // 显示分配权限的对话框
-    showRightDialog () {
+    async showRightDialog (row) {
+      // this.rightCheckedList = []
       this.rightDialogFormVisible = true
+      // 获取树状的所有权限数据
+      const {data: {data, meta}} = await this.$http.get('rights/tree')
+      if (meta.status !== 200) return this.$message.error('获取所有权限失败')
+      this.rightTree = data
+      // row 目的 获取当前角色的已有权限
+      // 已有权限  row.child
+      // 问题：获取到父节点的id 获取到子节点的id
+      // 父节点如果选项 下面所有的子节点都会选中
+      // 半选中  子节点没有全部选中
+      // 注意：不能有父节点，子需要三级权限ID即可
+      const arr = []
+      row.child.forEach(item => {
+        item.child.forEach(item => {
+          item.child.forEach(item => {
+            arr.push(item.id)
+          })
+        })
+      })
+      this.rightCheckedList = arr
     },
     // 分配权限
     rightSubmit () {
