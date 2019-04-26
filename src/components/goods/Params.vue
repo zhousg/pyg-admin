@@ -17,6 +17,7 @@
             expand-trigger="hover"
             :options="categoryList"
             v-model="categoryValues"
+            :props="{value:'cat_id',label:'cat_name'}"
             @change="handleChange">
           </el-cascader>
         </el-form-item>
