@@ -29,7 +29,7 @@
           <el-table :data="manyAttrs">
             <el-table-column type="expand" width="100px">
               <template slot-scope="scope">
-                <el-tag v-for="(item,i) in scope.row.attr_vals.split(',')" :key="i" size="normal" closable>{{item}}</el-tag>
+                <el-tag @close="delTag(scope.row,i)" v-for="(item,i) in scope.row.attr_vals" :key="i" size="normal" closable>{{item}}</el-tag>
                 <el-tag size="normal">+添加tag</el-tag>
               </template>
             </el-table-column>
@@ -37,7 +37,7 @@
             <el-table-column label="操作" width="120px">
               <template slot-scope="scope">
                 <el-button icon="el-icon-edit" circle></el-button>
-                <el-button icon="el-icon-delete" circle></el-button>
+                <el-button icon="el-icon-delete" @click="delParams(scope.row.attr_id)" circle></el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -55,7 +55,7 @@
             <el-table-column label="操作" width="120px">
               <template slot-scope="scope">
                 <el-button icon="el-icon-edit" circle></el-button>
-                <el-button icon="el-icon-delete" circle></el-button>
+                <el-button icon="el-icon-delete" @click="delParams(scope.row.attr_id)" circle></el-button>
               </template>
             </el-table-column>
           </el-table>

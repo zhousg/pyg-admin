@@ -7,6 +7,9 @@ body{
   padding: 0;
 }
 
+.el-submenu li.el-menu-item{
+  min-width: 180px;
+}
 /* 组件的名字是什么 将来的标签上就会有一个相同的类 */
 .el-card{
   margin-top: 15px;

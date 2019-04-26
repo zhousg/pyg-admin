@@ -29,7 +29,48 @@ export default {
   mounted () {
     this.getData()
   },
+  // 计算属性：函数的名字就是一个数据的字段名称  使用和data中申明的数据一样
+  computed: {
+    id: function () {
+      // 为了严谨  程序更加健壮
+      if (this.categoryValues.length === 3) {
+        return this.categoryValues[2]
+      } else {
+        return null
+      }
+    }
+  },
   methods: {
+    // tag关闭事件
+    async delTag (row, i) {
+      // 删除tag的效果  并没有真正的去修改后台的数据
+      row.attr_vals.splice(i, 1)
+      // 根据现在的arr去修改后台的参数的值
+      const {data: {meta}} = await this.$http.put(`categories/${this.id}/attributes/${row.attr_id}`, {
+        attr_name: row.attr_name,
+        attr_sel: this.activeName,
+        attr_vals: row.attr_vals.join(',')
+      })
+      if (meta.status !== 200) return this.$message.error('更新参数值失败')
+      this.$message.success('更新参数值成功')
+    },
+    // 删除参数
+    delParams (attrId) {
+      this.$confirm('是否删除该参数?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        // :id 传 分类的ID
+        const id = this.categoryValues[2]
+        // :attrid 就是当前的参数ID
+        const {data: {meta}} = await this.$http.delete(`categories/${id}/attributes/${attrId}`)
+        if (meta.status !== 200) return this.$message.error('删除参数失败')
+        this.$message.success('删除参数成功')
+        // 更新当前的列表
+        this.getParams()
+      }).catch(() => {})
+    },
     showAddDialog () {
       this.addDialogFormVisible = true
       this.$nextTick(() => {
@@ -38,7 +79,7 @@ export default {
     },
     addSubmit () {
       // 提交添加的参数
-      this.$refs.addForm.validate(async valid =>{
+      this.$refs.addForm.validate(async valid => {
         if (valid) {
           // 发请求
           // 获取第三级分类的ID
@@ -86,6 +127,15 @@ export default {
         // 参数列表获取成功 显示列表 依赖数据  data定义数据
         // 给谁赋值数据？？？  根据当前选中的tab去给  manyAttrs onlyAttrs 赋值
         // 根据当前的 activeName 去找到对应的列表  赋值
+
+        // data attr_vals是一个字符串 条件动态参数的时候才需要转换数组
+        if (this.activeName === 'many') {
+          data.forEach(item => {
+            // 如果attr_vals=''  去使用split() 产生 ['']
+            item.attr_vals = item.attr_vals ? item.attr_vals.split(',') : []
+          })
+        }
+
         this[`${this.activeName}Attrs`] = data
         this.disabled = false
       } else {
