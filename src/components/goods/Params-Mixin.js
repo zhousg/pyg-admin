@@ -41,10 +41,34 @@ export default {
     }
   },
   methods: {
+    // 隐藏input事件
+    hideInput (row) {
+      row.inputShow = false
+      if (row.inputValue) {
+        // 当前input输入的内容 追加到 attr_vals 中
+        row.attr_vals.push(row.inputValue)
+        // 把修改好的数据给后台
+        this.editAttr(row)
+        row.inputValue = ''
+      }
+    },
+    // 显示input的事件
+    showInput (row) {
+      row.inputShow = true
+      // dom.focus() 获取焦点  dom 当前行的input
+      console.log(this.$refs['input' + row.attr_id])
+      this.$nextTick(() => {
+        this.$refs['input' + row.attr_id].focus()
+      })
+    },
     // tag关闭事件
-    async delTag (row, i) {
+    delTag (row, i) {
       // 删除tag的效果  并没有真正的去修改后台的数据
       row.attr_vals.splice(i, 1)
+      // 把修改好的数据给后台
+      this.editAttr(row)
+    },
+    async editAttr (row) {
       // 根据现在的arr去修改后台的参数的值
       const {data: {meta}} = await this.$http.put(`categories/${this.id}/attributes/${row.attr_id}`, {
         attr_name: row.attr_name,
@@ -133,6 +157,9 @@ export default {
           data.forEach(item => {
             // 如果attr_vals=''  去使用split() 产生 ['']
             item.attr_vals = item.attr_vals ? item.attr_vals.split(',') : []
+            // 添加字段 inputShow 控制tag和input显示隐藏
+            item.inputShow = false
+            item.inputValue = ''
           })
         }
 

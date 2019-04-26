@@ -30,7 +30,22 @@
             <el-table-column type="expand" width="100px">
               <template slot-scope="scope">
                 <el-tag @close="delTag(scope.row,i)" v-for="(item,i) in scope.row.attr_vals" :key="i" size="normal" closable>{{item}}</el-tag>
-                <el-tag size="normal">+添加tag</el-tag>
+                <el-tag
+                  v-show="!scope.row.inputShow"
+                  @click="showInput(scope.row)"
+                  :disable-transitions="true"
+                  class="w100"
+                  size="normal">
+                  +添加tag
+                </el-tag>
+                <el-input
+                  v-model="scope.row.inputValue"
+                  @blur="hideInput(scope.row)"
+                  @keyup.native.enter="hideInput(scope.row)"
+                  :ref="'input'+scope.row.attr_id"
+                  v-show="scope.row.inputShow"
+                  class="w100 newInput">
+                </el-input>
               </template>
             </el-table-column>
             <el-table-column label="属性名称" prop="attr_name"></el-table-column>
@@ -86,6 +101,12 @@ export default {
 
 <style scoped>
 .el-tag{
+  margin: 5px;
+}
+.w100{
+  width: 100px;
+}
+.newInput{
   margin: 5px;
 }
 </style>
