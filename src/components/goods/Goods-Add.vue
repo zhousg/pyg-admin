@@ -77,7 +77,10 @@
             <img width="100%" :src="dialogImageUrl" alt="">
           </el-dialog>
         </el-tab-pane>
-        <el-tab-pane label="商品内容">商品内容</el-tab-pane>
+        <el-tab-pane label="商品内容">
+          <quill-editor v-model="form.goods_introduce"></quill-editor>
+          <el-button style="margin-top: 20px" type="success" @click="addSubmit()">保存商品</el-button>
+        </el-tab-pane>
       </el-tabs>
     </el-card>
   </div>

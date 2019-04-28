@@ -134,6 +134,16 @@ export default {
       })
       if (meta.status !== 200) return this.$message.error('获取参数数据失败')
       this[type + 'Attrs'] = data
+    },
+    async addSubmit () {
+      // 1. 合并动态参数manyAttrs和静态参数onlyAttrs
+      this.form.attrs = [...this.manyAttrs, ...this.onlyAttrs]
+      // 2. 发请求
+      const {data: {meta}} = await this.$http.post('goods', this.form)
+      if (meta.status !== 201) return this.$message.error('商品录入失败')
+      this.$message.success('商品录入成功')
+      // 3. 去列表页
+      this.$router.push('/goods')
     }
   }
 }

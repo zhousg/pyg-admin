@@ -16,6 +16,14 @@ import 'element-ui/lib/theme-chalk/index.css'
 /* 依赖全局样式文件 */
 import './assets/css/global.css'
 
+// 富文本编辑器
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
+Vue.use(VueQuillEditor)
+
 Vue.use(ElementUI, {size: 'small'})
 
 Vue.prototype.$http = axios
