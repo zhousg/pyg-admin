@@ -34,7 +34,17 @@ export default {
       },
       // 级联相关的数据
       categoryList: [],
-      categoryValues: []
+      categoryValues: [],
+      // 参数列表数据
+      manyAttrs: [],
+      onlyAttrs: [],
+      // 上传图片
+      dialogImageUrl: '',
+      dialogVisible: false,
+      action: this.$http.defaults.baseURL + '/upload/',
+      headers: {
+        Authorization: sessionStorage.getItem('token')
+      }
     }
   },
   watch: {
@@ -55,6 +65,27 @@ export default {
     this.getData()
   },
   methods: {
+    // 上传成功后需要给  form.pics 数组追加图片
+    handleSuccess (res) {
+      // 图片地址？  在上传成功后获取响应数据   才有图片地址
+      this.form.pics.push({pic: res.data.tmp_path})
+    },
+    handleRemove (file, fileList) {
+      // 删除图片后台触发的事件
+      console.log(file, fileList)
+      // 移除 form.pics 中对应的图片对象
+      // 根据索引删除一条即可
+      // 在file中可以获取当前删除图片的临时路径
+      // 根据路径去 form.pics 获取对应的索引
+      const tmpPath = file.response.data.tmp_path
+      const index = this.form.pics.findIndex(item => item.pic === tmpPath)
+      this.form.pics.splice(index, 1)
+    },
+    handlePictureCardPreview (file) {
+      // 预览图片
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
     // changeTab (tab) {
     //   // 根据当去的tab的位置 去切换步骤条的位置
     //   // tab 当请点击的tab的实例对象  包含一些信息
@@ -82,6 +113,9 @@ export default {
             if (valid) {
               // 校验成功  随着tab的索引去切步骤条
               this.active = +activeName
+              // 获取第二个和第三个选项卡的数据
+              this.getParams('many')
+              this.getParams('only')
               resolve()
             } else {
               reject(new Error('校验表单失败'))
@@ -92,6 +126,14 @@ export default {
         // 如果不是第一个选项  随着tab的索引去切步骤条
         this.active = +activeName
       }
+    },
+    async getParams (type) {
+      const id = this.categoryValues[2]
+      const {data: {data, meta}} = await this.$http.get(`categories/${id}/attributes`, {
+        params: {sel: type}
+      })
+      if (meta.status !== 200) return this.$message.error('获取参数数据失败')
+      this[type + 'Attrs'] = data
     }
   }
 }
