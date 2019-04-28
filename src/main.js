@@ -3,8 +3,6 @@ import App from './App'
 import router from './router'
 import moment from 'moment'
 
-/* 依赖全局样式文件 */
-import './assets/css/global.css'
 /* 依赖字体图标css */
 import './assets/fonts/iconfont.css'
 
@@ -14,6 +12,10 @@ import axios from './http'
 /* 依赖element-ui */
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+
+/* 依赖全局样式文件 */
+import './assets/css/global.css'
+
 Vue.use(ElementUI, {size: 'small'})
 
 Vue.prototype.$http = axios

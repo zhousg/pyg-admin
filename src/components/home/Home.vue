@@ -8,7 +8,7 @@
     <el-container>
       <el-aside class="home_aside" :width="collapse?'65px':'180px'">
         <el-menu
-          :default-active="$route.name"
+          :default-active="'/'+$route.name"
           router
           :unique-opened="true"
           :collapse="collapse"
@@ -26,7 +26,7 @@
               <span>&nbsp;{{item.authName}}</span>
             </template>
             <!--二级菜单  只要index唯一就可以了 -->
-            <el-menu-item :index="lastItem.path" v-for="lastItem in item.children" :key="lastItem.id">
+            <el-menu-item :index="'/'+lastItem.path" v-for="lastItem in item.children" :key="lastItem.id">
               <i class="el-icon-menu"></i>
               <span>{{lastItem.authName}}</span>
             </el-menu-item>

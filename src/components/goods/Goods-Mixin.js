@@ -15,6 +15,9 @@ export default {
     this.getData()
   },
   methods: {
+    toAdd () {
+      this.$router.push('/goods/add')
+    },
     async getData () {
       const {data: {data, meta}} = await this.$http.get('goods', {params: this.reqParams})
       if (meta.status !== 200) return this.$message.error('获取商品信息失败')

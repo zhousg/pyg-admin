@@ -13,7 +13,7 @@
           </el-input>
         </el-col>
         <el-col :span="18">
-          <el-button type="primary"  plain>添加商品</el-button>
+          <el-button type="primary" @click="toAdd()"  plain>添加商品</el-button>
         </el-col>
       </el-row>
       <el-table :data="goodsList">
