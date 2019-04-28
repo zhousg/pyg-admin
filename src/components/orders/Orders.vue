@@ -30,8 +30,8 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button icon="el-icon-edit" circle></el-button>
-            <el-button icon="el-icon-location" circle></el-button>
+            <el-button icon="el-icon-edit" @click="editDialogFormVisible = true" circle></el-button>
+            <el-button icon="el-icon-location" @click="wlDialogFormVisible = true" circle></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -46,6 +46,38 @@
         </el-pagination>
       </div>
     </el-card>
+    <el-dialog title="编辑订单" width="400px" :visible.sync="editDialogFormVisible">
+      <el-form label-width="100px" autocomplete="off">
+        <el-form-item label="省市区">
+          <el-cascader
+            clearable
+            style="width: 200px"
+            expand-trigger="hover"
+            :options="categoryList"
+            v-model="categoryValues">
+          </el-cascader>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editDialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="查询物理" width="400px" :visible.sync="wlDialogFormVisible">
+      <!--时间线-->
+      <el-timeline>
+        <el-timeline-item
+          v-for="(item, i) in wlList"
+          :key="i"
+          :timestamp="item.time">
+          {{item.context}}
+        </el-timeline-item>
+      </el-timeline>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="wlDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="wlDialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
